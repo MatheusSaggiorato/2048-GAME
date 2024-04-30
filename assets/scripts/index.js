@@ -2,12 +2,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const currentScoreDisplay = document.getElementById('currentScore');
     const bestScoreDisplay = document.getElementById('bestScore');
     const tiles = document.querySelectorAll('.tile');
-    let currentScore = 0;
-    let bestScore = 0;
+    let currentScore = parseInt(localStorage.getItem('currentScore')) || 0;
+    let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
 
+    window.onload = function () {
+        // Exibe a melhor pontuação
+        bestScoreDisplay.textContent = bestScore;
+    }
+    
     // Função para criar o tabuleiro do jogo
     // Função para criar o tabuleiro do jogo e preencher as células vazias com zeros
     function createBoard() {
+        currentScore = 0;
         // Preencher apenas as células vazias com zeros
         const tiles = document.querySelectorAll('.tile');
         tiles.forEach(tile => {
@@ -20,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function () {
         generateRandomTile();
         generateRandomTile();
         tiles.forEach(tile => setColor(tile));
-
     }
 
     // Função para gerar um novo número aleatório em um quadrado vazio
@@ -37,11 +42,17 @@ document.addEventListener('DOMContentLoaded', function () {
     // Função para atualizar a pontuação atual e melhor pontuação
     function updateScore() {
         currentScoreDisplay.textContent = currentScore;
-        bestScoreDisplay.textContent = bestScore;
+        if (currentScore > bestScore) {
+            bestScore = currentScore;
+            bestScoreDisplay.textContent = bestScore;
+            localStorage.setItem('bestScore', bestScore.toString());
+        }
+        // Atualiza o currentScore no localStorage a cada atualização
+        localStorage.setItem('currentScore', currentScore.toString());
     }
 
     function setColor(tile) {
-        switch(tile.textContent) {
+        switch (tile.textContent) {
             case '0':
                 tile.style.backgroundColor = 'white';
                 break;
@@ -74,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 tile.style.backgroundColor = 'black'; // Cor padrão para outros valores
                 break;
         }
-        if(tile.textContent === '0') {
+        if (tile.textContent === '0') {
             tile.style.color = 'white'
         } else {
             tile.style.color = 'black'
@@ -129,8 +140,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (moved) {
             generateRandomTile();
             moved = false
+            updateScore()
         }
         tiles.forEach(tile => setColor(tile));
+
     }
 
     function moveDown() {
@@ -177,13 +190,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (moved) {
             generateRandomTile();
             moved = false
+            updateScore()
         }
         tiles.forEach(tile => setColor(tile));
     }
 
     function moveRight() {
         let moved = false; // Variável para rastrear se houve movimento
-    
+
         for (let row = 1; row <= 4; row++) {
             for (let col = 4; col >= 2; col--) {
                 const currentTile = document.querySelector(`.row${row}.column${col}`);
@@ -207,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
             }
-    
+
             for (let col = 4; col >= 2; col--) {
                 const currentTile = document.querySelector(`.row${row}.column${col}`);
                 if (currentTile.textContent === '0') {
@@ -224,17 +238,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         }
-    
+
         // Verifica se houve movimento antes de gerar um novo número aleatório
         if (moved) {
             generateRandomTile();
+            updateScore()
         }
         tiles.forEach(tile => setColor(tile));
     }
-    
+
     function moveLeft() {
         let moved = false; // Variável para rastrear se houve movimento
-        
+
         for (let row = 1; row <= 4; row++) {
             for (let col = 1; col <= 3; col++) {
                 const currentTile = document.querySelector(`.row${row}.column${col}`);
@@ -258,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
             }
-    
+
             for (let col = 1; col <= 3; col++) {
                 const currentTile = document.querySelector(`.row${row}.column${col}`);
                 if (currentTile.textContent === '0') {
@@ -275,14 +290,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         }
-    
+
         // Verifica se houve movimento antes de gerar um novo número aleatório
         if (moved) {
             generateRandomTile();
+            updateScore()
         }
         tiles.forEach(tile => setColor(tile));
     }
-    
+
 
     // Event listeners para as teclas de seta
     document.addEventListener('keydown', function (event) {
@@ -309,3 +325,11 @@ document.addEventListener('DOMContentLoaded', function () {
     tiles.forEach(tile => setColor(tile));
 
 });
+
+function resetGame() {
+    location.reload(); // Recarrega a janela atual
+}
+
+// Obtém o botão "New Game" pelo ID e atribui a função resetGame() ao evento de clique
+const newGameButton = document.getElementById('newGameBtn');
+newGameButton.onclick = resetGame;
