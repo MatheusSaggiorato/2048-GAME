@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const currentScoreDisplay = document.getElementById('currentScore');
     const bestScoreDisplay = document.getElementById('bestScore');
     const tiles = document.querySelectorAll('.tile');
+    let moved = false; // Variável para rastrear se houve movimento
     let currentScore = parseInt(localStorage.getItem('currentScore')) || 0;
     let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
 
@@ -9,9 +10,18 @@ document.addEventListener('DOMContentLoaded', function () {
         // Exibe a melhor pontuação
         bestScoreDisplay.textContent = bestScore;
     }
-    
-    // Função para criar o tabuleiro do jogo
-    // Função para criar o tabuleiro do jogo e preencher as células vazias com zeros
+
+    const upButton = document.getElementById('upButton');
+    const downButton = document.getElementById('downButton');
+    const leftButton = document.getElementById('leftButton');
+    const rightButton = document.getElementById('rightButton');
+
+    upButton.addEventListener('click', moveUp);
+    downButton.addEventListener('click', moveDown);
+    leftButton.addEventListener('click', moveLeft);
+    rightButton.addEventListener('click', moveRight);
+
+
     function createBoard() {
         currentScore = 0;
         // Preencher apenas as células vazias com zeros
@@ -28,7 +38,58 @@ document.addEventListener('DOMContentLoaded', function () {
         tiles.forEach(tile => setColor(tile));
     }
 
-    // Função para gerar um novo número aleatório em um quadrado vazio
+    function checkMovesAvailable() {
+        // Verifica se há pelo menos uma célula vazia
+        for (let row = 1; row <= 4; row++) {
+            for (let col = 1; col <= 4; col++) {
+                const currentTile = document.querySelector(`.row${row}.column${col}`);
+                if (currentTile.textContent === '0') {
+                    return true; // Se houver célula vazia, ainda há movimentos possíveis
+                }
+            }
+        }
+        return false; // Se não houver células vazias, não há mais movimentos possíveis
+    }
+
+    function checkGameOver() {
+        let boardFilled = true;
+
+        // Verifica se ainda há movimentos possíveis
+        if (checkMovesAvailable()) {
+            return false; // Se ainda houver movimentos possíveis, o jogo não acabou
+        }
+
+        // Verifica se há dois números iguais lado a lado nas linhas ou acima e abaixo nas colunas
+        for (let row = 1; row <= 4; row++) {
+            for (let col = 1; col <= 4; col++) {
+                const currentTile = document.querySelector(`.row${row}.column${col}`);
+                const rightTile = document.querySelector(`.row${row}.column${col + 1}`);
+                const bottomTile = document.querySelector(`.row${row + 1}.column${col}`);
+
+                if (rightTile && currentTile.textContent === rightTile.textContent) {
+                    return false; // Se dois números adjacentes forem iguais na mesma linha, o jogo não acabou
+                }
+
+                if (bottomTile && currentTile.textContent === bottomTile.textContent) {
+                    return false; // Se dois números adjacentes forem iguais na mesma coluna, o jogo não acabou
+                }
+
+                // Verifica se há células vazias no tabuleiro
+                if (currentTile.textContent === '0') {
+                    boardFilled = false;
+                }
+            }
+        }
+
+        // Se todas as células estiverem preenchidas e não houver movimentos possíveis, o jogo acabou
+        if (boardFilled) {
+            alert("Game Over. Não há mais movimentos possíveis", resetGame());
+            return true;
+        }
+
+        return true; // Se nenhum dos casos acima for verdadeiro, o jogo não acabou
+    }
+
     function generateRandomTile() {
         const emptyTiles = document.querySelectorAll('.tile');
         const zeroTiles = Array.from(emptyTiles).filter(tile => tile.textContent === '0');
@@ -39,7 +100,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Função para atualizar a pontuação atual e melhor pontuação
     function updateScore() {
         currentScoreDisplay.textContent = currentScore;
         if (currentScore > bestScore) {
@@ -52,47 +112,65 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function setColor(tile) {
+        const whiteColor = "#ececec";
+        const blackColor = "#414141";
         switch (tile.textContent) {
             case '0':
-                tile.style.backgroundColor = 'white';
+                tile.style.backgroundColor = whiteColor;
+                tile.style.color = whiteColor;
                 break;
             case '2':
-                tile.style.backgroundColor = 'green';
+                tile.style.backgroundColor = '#EEE4DA';
+                tile.style.color = blackColor;
                 break;
             case '4':
-                tile.style.backgroundColor = 'yellow';
+                tile.style.backgroundColor = '#EEE1C9';
+                tile.style.color = blackColor;
                 break;
             case '8':
-                tile.style.backgroundColor = 'orange';
+                tile.style.backgroundColor = '#EDCC62';
+                tile.style.color = blackColor;
                 break;
             case '16':
-                tile.style.backgroundColor = 'darkorange';
+                tile.style.backgroundColor = '#f5d055';
+                tile.style.color = blackColor;
                 break;
             case '32':
-                tile.style.backgroundColor = 'darkred';
+                tile.style.backgroundColor = '#f1c533';
+                tile.style.color = blackColor;
                 break;
             case '64':
-                tile.style.backgroundColor = 'dimgray';
+                tile.style.backgroundColor = '#F3B27A';
+                tile.style.color = blackColor;
                 break;
             case '128':
-                tile.style.backgroundColor = 'limegreen';
+                tile.style.backgroundColor = '#F69664';
+                tile.style.color = blackColor;
                 break;
             case '256':
-                tile.style.backgroundColor = 'purple';
+                tile.style.backgroundColor = '#F77C5F';
+                tile.style.color = blackColor;
                 break;
-            // Adicione mais casos para outros valores, se necessário
+            case '512':
+                tile.style.backgroundColor = '#F75F3B';
+                tile.style.color = blackColor;
+                break;
+            case '1024':
+                tile.style.backgroundColor = '#c44427';
+                tile.style.color = whiteColor;
+                break;
+            case '2048':
+                tile.style.backgroundColor = '#EDC950';
+                tile.style.color = blackColor;
+                break;
             default:
-                tile.style.backgroundColor = 'black'; // Cor padrão para outros valores
                 break;
         }
-        if (tile.textContent === '0') {
-            tile.style.color = 'white'
-        } else {
-            tile.style.color = 'black'
+        if (parseInt(tile.textContent) > 1024) {
+            tile.style.backgroundColor = '#272625'
+            tile.style.color = whiteColor
         }
     }
-
-    let moved = false; // Variável para rastrear se houve movimento
 
     function moveUp() {
         for (let col = 1; col <= 4; col++) {
@@ -110,7 +188,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             nextTile.textContent = '0';
                             // Atualiza a pontuação
                             currentScore += sum;
-                            moved = true; // Marca que houve movimento
+                            moved = true; // Marca que houve movimentocurrentTile.classList.remove('grow');
+
+                            currentTile.classList.remove('grow');
+                            currentTile.classList.add('grow'); // Adiciona a classe para animar o crescimento
+                            void currentTile.offsetWidth;
                             break;
                         } else {
                             break;
@@ -138,12 +220,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Verifica se houve movimento antes de gerar um novo número aleatório
         if (moved) {
+            updateScore();
             generateRandomTile();
-            moved = false
-            updateScore()
+            moved = false;
         }
         tiles.forEach(tile => setColor(tile));
 
+        setTimeout(() => {
+            checkGameOver();
+        }, 350);
     }
 
     function moveDown() {
@@ -163,6 +248,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             // Atualiza a pontuação
                             currentScore += sum;
                             moved = true;
+
+                            currentTile.classList.remove('grow');
+                            currentTile.classList.add('grow'); // Adiciona a classe para animar o crescimento
+                            void currentTile.offsetWidth;
                             break;
                         } else {
                             break;
@@ -188,11 +277,15 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
         if (moved) {
+            updateScore();
             generateRandomTile();
-            moved = false
-            updateScore()
+            moved = false;
         }
+
         tiles.forEach(tile => setColor(tile));
+        setTimeout(() => {
+            checkGameOver();
+        }, 350);
     }
 
     function moveRight() {
@@ -214,6 +307,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             // Atualiza a pontuação
                             currentScore += sum;
                             moved = true; // Marca que houve movimento
+
+                            currentTile.classList.remove('grow');
+                            currentTile.classList.add('grow'); // Adiciona a classe para animar o crescimento
+                            void currentTile.offsetWidth;
                             break;
                         } else {
                             break;
@@ -241,10 +338,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Verifica se houve movimento antes de gerar um novo número aleatório
         if (moved) {
+            updateScore();
             generateRandomTile();
-            updateScore()
+            moved = false;
         }
         tiles.forEach(tile => setColor(tile));
+        setTimeout(() => {
+            checkGameOver();
+        }, 350);
     }
 
     function moveLeft() {
@@ -266,6 +367,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             // Atualiza a pontuação
                             currentScore += sum;
                             moved = true; // Marca que houve movimento
+
+                            currentTile.classList.remove('grow');
+                            currentTile.classList.add('grow'); // Adiciona a classe para animar o crescimento
+                            void currentTile.offsetWidth;
                             break;
                         } else {
                             break;
@@ -293,14 +398,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Verifica se houve movimento antes de gerar um novo número aleatório
         if (moved) {
+            updateScore();
             generateRandomTile();
-            updateScore()
+            moved = false;
         }
         tiles.forEach(tile => setColor(tile));
+        setTimeout(() => {
+            checkGameOver();
+        }, 300);
+
     }
 
-
-    // Event listeners para as teclas de seta
     document.addEventListener('keydown', function (event) {
         switch (event.key) {
             case 'ArrowUp':
@@ -320,16 +428,23 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Iniciar o jogo ao carregar a página
     createBoard();
     tiles.forEach(tile => setColor(tile));
 
 });
 
 function resetGame() {
-    location.reload(); // Recarrega a janela atual
+    location.reload();
 }
 
-// Obtém o botão "New Game" pelo ID e atribui a função resetGame() ao evento de clique
+function newGame() {
+    // Pergunta ao jogador se ele tem certeza de que deseja iniciar um novo jogo
+    const confirmReset = confirm("Tem certeza de que deseja iniciar um novo jogo?");
+    // Se o jogador confirmar, inicie um novo jogo
+    if (confirmReset) {
+        location.reload(); // Recarrega a janela atual
+    }
+}
+
 const newGameButton = document.getElementById('newGameBtn');
-newGameButton.onclick = resetGame;
+newGameButton.onclick = newGame;

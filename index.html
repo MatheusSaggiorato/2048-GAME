@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2048 Game</title>
     <link rel="stylesheet" type="text/css" href="./assets/styles/style.css">
 </head>
+
 <body>
     <div class="container">
         <h1>2048</h1>
         <div class="score">
-            <span>Current Score: <span id="currentScore">0</span></span>
-            <span>Best Score: <span id="bestScore">0</span></span>
+            <span>Score: <span id="currentScore">0</span></span>
+            <span>Best score: <span id="bestScore">0</span></span>
         </div>
-        <button id="newGameBtn">New Game</button>
+        <button id="newGameBtn">Novo jogo</button>
         <div class="grid">
             <div class="tile row1 column1" id="tile1"></div>
             <div class="tile row1 column2" id="tile2"></div>
@@ -32,7 +34,16 @@
             <div class="tile row4 column3" id="tile15"></div>
             <div class="tile row4 column4" id="tile16"></div>
         </div>
+        <div class="buttons-container">
+            <div>
+                <button class="buttons-direction" id="upButton">&#8593;</button>
+            </d>
+            <button class="buttons-direction" id="leftButton">&#8592;</button>
+            <button class="buttons-direction" id="downButton">&#8595;</button>
+            <button class="buttons-direction" id="rightButton">&#8594;</button>
+        </div>
     </div>
 
     <script src="./assets/scripts/index.js"></script>
+
 </html>
