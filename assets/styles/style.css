@@ -1,7 +1,11 @@
-body {
-  font-family: Arial, sans-serif;
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
   text-align: center;
 }
 
@@ -50,18 +54,20 @@ h1 {
   font-weight: bold;
   border-radius: 6px;
   margin: 5px;
+  color: #414141;
 }
 
 .grow {
-  animation: growAnimation 0.1s ease-in-out; /* Animação para crescimento rápido */
+  animation: growAnimation 0.1s ease-in-out;
 }
 
 @keyframes growAnimation {
   0% {
-      transform: scale(1); /* Tamanho inicial */
+    transform: scale(1);
   }
+
   100% {
-      transform: scale(1.2); /* Tamanho final */
+    transform: scale(1.2);
   }
 }
 
@@ -104,12 +110,60 @@ h1 {
   color: #ffff;
 }
 
-/* Efeito de hover */
 .buttons-direction:hover {
   transform: scale(0.95);
 }
 
-@media screen and (max-width: 450px){
+.instructions {
+  padding: 1rem 2.5rem;
+  text-align: start;
+}
+
+h1 {
+  font-size: 1.8rem;
+}
+
+#confirmation {
+  border: 1px solid black;
+  width: 17rem;
+  height: 17rem;
+  position: fixed;
+  border-radius: 1rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 1rem;
+}
+
+.confirmationMessage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hidden {
+  display: none;
+}
+
+#confirmOk,
+#confirmCancel {
+  margin-top: 1rem;
+  background-color: #007bff;
+  color: #000;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: .4rem;
+  border-radius: .5rem;
+}
+
+#confirmOk:hover,
+#confirmCancel:hover {
+  transform: scale(0.9);
+}
+
+@media screen and (max-width: 450px) {
   .grid {
     width: 18rem;
     height: 18rem;
@@ -120,13 +174,12 @@ h1 {
   }
 }
 
-@media screen and (max-width: 300px){
+@media screen and (max-width: 300px) {
   .grid {
     width: 100%;
     height: 12rem;
   }
 
-  
   .tile {
     font-size: 14px;
   }

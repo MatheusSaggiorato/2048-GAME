@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2048 Game</title>
+    <link rel="icon" href="./assets/images/2048.webp">
     <link rel="stylesheet" type="text/css" href="./assets/styles/style.css">
 </head>
 
@@ -37,12 +38,56 @@
         <div class="buttons-container">
             <div>
                 <button class="buttons-direction" id="upButton">&#8593;</button>
-            </d>
+            </div>
             <button class="buttons-direction" id="leftButton">&#8592;</button>
             <button class="buttons-direction" id="downButton">&#8595;</button>
             <button class="buttons-direction" id="rightButton">&#8594;</button>
         </div>
     </div>
+
+    <div class="instructions">
+        <strong>Objetivo:</strong>
+        O objetivo do jogo é combinar blocos numéricos idênticos para alcançar o bloco 2048.
+        <br>
+        <br>
+        <strong>Movimentos:</strong>
+        Você pode mover todos os blocos na grade para cima, baixo, esquerda ou direita, utilizando as setas do
+        teclado
+        ou os botões acima.
+        Todos os blocos na grade se movem na mesma direção até atingirem a borda da grade ou encontrarem outro
+        bloco.
+        Se dois blocos idênticos colidirem durante um movimento na mesma direção, eles se fundem em um bloco com o
+        dobro do valor.
+        <br>
+        <br>
+        <strong>Mecânica do jogo:</strong>
+        Inicialmente, dois blocos com valores de 2 ou 4 são apresentados na grade, e em cada movimento surge um
+        novo bloco aleatóriamente, com 90% de chance de surgir um 2 e 10% de surgir um 4.
+        <br>
+        <br>
+        <strong>Fim de jogo:</strong>
+        O jogo termina quando não há mais movimentos possíveis ou quando você alcança o bloco 2048(pode escolher
+        continuar).
+        Se a grade ficar completamente cheia e nenhum movimento for possível, o jogo acaba e você perde.
+        <br>
+        <br>
+        <strong>Pontuação:</strong>
+        Sua pontuação é a soma de todos os valores que foram somados, ou seja, juntou dois blocos 2, 4 será somado a
+        pontuação,
+        juntou dois blocos 1024, 2048 será somado a pontuação.
+    </div>
+
+    <div id="confirmation" class="hidden">
+        <div class="confirmationMessage">
+            <h1>Parabéns,Você chegou a 2048!</h1>
+            <h2>Deseja continuar?</h2>
+            <span>
+                <button id="confirmCancel">Continuar</button>
+                <button id="confirmOk">Reiniciar</button>
+            </span>
+        </div>
+    </div>
+
 
     <script src="./assets/scripts/index.js"></script>
 
