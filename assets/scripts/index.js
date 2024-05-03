@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tiles = document.querySelectorAll('.tile');
     const confirmation = document.getElementById('confirmation');
     let winChecked = false;
+    let gameOver = false;
     let moved = false;
     let currentScore = parseInt(localStorage.getItem('currentScore')) || 0;
     let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
@@ -75,43 +76,45 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
-
     function checkGameOver() {
+        // Se o jogo já terminou, retorna
+        if (gameOver) {
+            return;
+        }
 
+        // Verifica se o jogador ganhou
         checkWin();
 
-        let boardFilled = true;
+        // Verifica se ainda há movimentos disponíveis
+        if (!checkMovesAvailable()) {
+            // Verifica se o tabuleiro está completamente preenchido
+            let boardFilled = true;
+            for (let row = 1; row <= 4; row++) {
+                for (let col = 1; col <= 4; col++) {
+                    const currentTile = document.querySelector(`.row${row}.column${col}`);
+                    const rightTile = document.querySelector(`.row${row}.column${col + 1}`);
+                    const bottomTile = document.querySelector(`.row${row + 1}.column${col}`);
 
-        if (checkMovesAvailable()) {
-            return false;
-        }
+                    if ((rightTile && currentTile.textContent === rightTile.textContent) ||
+                        (bottomTile && currentTile.textContent === bottomTile.textContent)) {
+                        // Se houver dois blocos adjacentes com o mesmo valor, o jogo não acabou
+                        return;
+                    }
 
-        for (let row = 1; row <= 4; row++) {
-            for (let col = 1; col <= 4; col++) {
-                const currentTile = document.querySelector(`.row${row}.column${col}`);
-                const rightTile = document.querySelector(`.row${row}.column${col + 1}`);
-                const bottomTile = document.querySelector(`.row${row + 1}.column${col}`);
-
-                if (rightTile && currentTile.textContent === rightTile.textContent) {
-                    return false;
-                }
-
-                if (bottomTile && currentTile.textContent === bottomTile.textContent) {
-                    return false;
-                }
-
-                if (currentTile.textContent === '0') {
-                    boardFilled = false;
+                    if (currentTile.textContent === '0') {
+                        // Se houver algum bloco vazio, o jogo não acabou
+                        boardFilled = false;
+                    }
                 }
             }
-        }
 
-        if (boardFilled) {
-            alert("Game Over. Não há mais movimentos possíveis", resetGame());
-            return true;
+            // Se o tabuleiro estiver completamente preenchido, exibe o alerta de game over
+            if (boardFilled) {
+                alert("Game Over. Não há mais movimentos possíveis");
+                gameOver = true; // Atualiza a variável de controle
+                resetGame();
+            }
         }
-
-        return true;
     }
 
     function setColor(tile) {
@@ -318,10 +321,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    upButton.addEventListener('click', move('up'));
-    downButton.addEventListener('click', move('down'));
-    leftButton.addEventListener('click', move('left'));
-    rightButton.addEventListener('click', move('right'));
+    upButton.addEventListener('click', () => move('up'));
+    downButton.addEventListener('click', () => move('down'));
+    leftButton.addEventListener('click', () => move('left'));
+    rightButton.addEventListener('click', () => move('right'));
 
     createBoard();
     tiles.forEach(tile => setColor(tile));
